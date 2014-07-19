@@ -1,0 +1,15 @@
+*~
+dist/
+log/
+*#
+.#*
+moo.sh
+moo_test.sh
+prod.cfg
+site_key.txt
+cabal.sandbox*
+.cabal-sandbox/
+.dir-locals.el
+*.o
+*.hi
+TAGS

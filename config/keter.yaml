@@ -1,0 +1,14 @@
+exec: ../project
+args:
+    - -e
+    - prod
+host: production.com
+static-hosts:
+    - host: www.production.com
+      root: ../static
+postgres: false
+redirects:
+    - from: beta.production.com
+      to: production.com
+    - from: www.production.com
+      to: production.com
