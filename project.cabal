@@ -31,7 +31,7 @@ Executable project
     snap-core                 >= 0.9     && < 0.11,
     snap-server               >= 0.9     && < 0.10,
     snap-loader-static        >= 0.9     && < 0.10,
-    text                      >= 0.11    && < 0.12,
+    text                      >= 0.11    && < 1.2,
     time                      >= 1.1     && < 1.5,
     xmlhtml                   >= 0.1,
     postgresql-simple,
@@ -55,7 +55,7 @@ Executable project
     aeson >= 0.7 && < 0.8,
     snap-extras >= 0.9 && < 0.10,
     base                      >= 4.4      && < 5,
-    lens                      >= 3.7.6    && < 3.10
+    lens                      >= 3.7.6    && < 4.4
 
   if flag(development)
     build-depends:

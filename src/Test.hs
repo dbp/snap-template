@@ -26,10 +26,6 @@ import Snap.Snaplet.Auth
 import Snap.Snaplet.Session
 import Snap.Test.BDD
 
-import qualified Network.SOAP.Transport.Mock as Mock
-import qualified Text.XML.Writer as Mock
-
-
 import Helpers
 import Application
 import Site
