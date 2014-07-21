@@ -13,14 +13,16 @@ read -e -p "Enter the password for development database (need not be secure): " 
 
 echo "Setting up..."
 
-find . ! -iname configure.sh -type f -print0 | xargs -0 sed -i "s/PROJECT_NAME/${proj_name}/g"
-find . ! -iname configure.sh -type f -print0 | xargs -0 sed -i "s/REMOTE_USER/${remote_user}/g"
-find . ! -iname configure.sh -type f -print0 | xargs -0 sed -i "s/PRODUCTION_DOMAIN/${prod_domain}/g"
-find . ! -iname configure.sh -type f -print0 | xargs -0 sed -i "s/AUTHOR_NAME/${author_name}/g"
-find . ! -iname configure.sh -type f -print0 | xargs -0 sed -i "s/AUTHOR_EMAIL/${author_email}/g"
-find . ! -iname configure.sh -type f -print0 | xargs -0 sed -i "s/SITE_EMAIL/${site_email}/g"
-find . ! -iname configure.sh -type f -print0 | xargs -0 sed -i "s/LICENSE_NAME/${license}/g"
-find . ! -iname configure.sh -type f -print0 | xargs -0 sed -i "s/DEVELOPMENT_PASSWORD/${db_pass}/g"
+find_comm="find . ! -iname configure.sh ! -path ./.git/\*  -type f -print0"
+
+${find_comm} | xargs -0 sed -i "s/PROJECT_NAME/${proj_name}/g"
+${find_comm} | xargs -0 sed -i "s/REMOTE_USER/${remote_user}/g"
+${find_comm} | xargs -0 sed -i "s/PRODUCTION_DOMAIN/${prod_domain}/g"
+${find_comm} | xargs -0 sed -i "s/AUTHOR_NAME/${author_name}/g"
+${find_comm} | xargs -0 sed -i "s/AUTHOR_EMAIL/${author_email}/g"
+${find_comm} | xargs -0 sed -i "s/SITE_EMAIL/${site_email}/g"
+${find_comm} | xargs -0 sed -i "s/LICENSE_NAME/${license}/g"
+${find_comm} | xargs -0 sed -i "s/DEVELOPMENT_PASSWORD/${db_pass}/g"
 mv PROJECT_NAME.cabal ${proj_name}.cabal
 
 echo "All done!"
