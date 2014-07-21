@@ -3,8 +3,13 @@
 - name: add local key to the authorized_keys of vagrant
   authorized_key: user=vagrant key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
+- name: look for cabal database
+  shell: ls {{ cabal_prefix_dir }}/packages
+  register: cabal_packages_dir
+
 - name: download cabal update
   shell: "PATH=$PATH:{{ cabal_prefix_dir }}/bin cabal update"
+  when: cabal_packages_dir.stdout.find("hackage") == -1
 
 - name: install database creation library
   sudo: yes
@@ -27,10 +32,10 @@
 
 - name: install happy
   sudo: no
-  shell: "PATH=$PATH:{{ cabal_prefix_dir }}/bin:{{ ghc_prefix_dir}}/bin cabal install happy"
+  shell: "PATH=$PATH:{{ cabal_prefix_dir }}/bin:{{ ghc_prefix_dir}}/bin cabal install happy creates={{ cabal_prefix_dir }}/bin/happy"
   ignore_errors: yes
 
 - name: install alex
   sudo: no
-  shell: "PATH=$PATH:{{ cabal_prefix_dir }}/bin:{{ ghc_prefix_dir}}/bin cabal install alex"
+  shell: "PATH=$PATH:{{ cabal_prefix_dir }}/bin:{{ ghc_prefix_dir}}/bin cabal install alex creates={{ cabal_prefix_dir }}/bin/happy"
   ignore_errors: yes
