@@ -1,6 +1,3 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
 Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. See: vagrantup.com.
 
@@ -16,7 +13,7 @@ Vagrant.configure("2") do |config|
 
   # Provider-specific configuration for VirtualBox.
   config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--name", "project"]
+    v.customize ["modifyvm", :id, "--name", "PROJECT_NAME"]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--memory", 2048]
     v.customize ["modifyvm", :id, "--cpus", 2]
@@ -33,8 +30,8 @@ Vagrant.configure("2") do |config|
   end
 
   # Set the name of the VM. See: http://stackoverflow.com/a/17864388/100134
-  config.vm.define :project do |project|
-    project.vm.hostname = "project"
+  config.vm.define :PROJECT_NAME do |PROJECT_NAME|
+    PROJECT_NAME.vm.hostname = "PROJECT_NAME"
   end
 
 end

@@ -1,10 +1,10 @@
-Name:                project
+Name:                PROJECT_NAME
 Version:             0.1
 Synopsis:
 Description:
-License:             AllRightsReserved
-Author:              Author Name
-Maintainer:          author@email.com
+License:             LICENSE_NAME
+Author:              AUTHOR_NAME
+Maintainer:          AUTHOR_EMAIL
 Stability:           Experimental
 Category:            Web
 Build-type:          Simple
@@ -18,7 +18,7 @@ Flag old-base
   default: False
   manual: False
 
-Executable project
+Executable PROJECT_NAME
   hs-source-dirs: src
   main-is: Main.hs
 

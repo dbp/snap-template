@@ -1,14 +1,14 @@
-exec: ../project
+exec: ../PROJECT_NAME
 args:
     - -e
     - prod
-host: production.com
+host: PRODUCTION_DOMAIN
 static-hosts:
-    - host: www.production.com
+    - host: static.PRODUCTION_DOMAIN
       root: ../static
 postgres: false
 redirects:
-    - from: beta.production.com
-      to: production.com
-    - from: www.production.com
-      to: production.com
+    - from: beta.PRODUCTION_DOMAIN
+      to: PRODUCTION_DOMAIN
+    - from: www.PRODUCTION_DOMAIN
+      to: PRODUCTION_DOMAIN

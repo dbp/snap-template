@@ -8,10 +8,10 @@ import qualified Network.AmazonEmailer.Client.Snap as E
 import Application
 
 fromEmail :: Text
-fromEmail = "from@production.com"
+fromEmail = "SITE_EMAIL"
 
 fromName :: Text
-fromName = "Project"
+fromName = "PROJECT_NAME"
 
 sendEmail :: Text -> Text -> Text -> AppHandler ()
 sendEmail to subj body = do

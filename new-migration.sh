@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./moo.sh new `date +%F`-$@
+moo new `date +%F`-$@ -c devel.cfg
