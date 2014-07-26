@@ -1,1 +1,9 @@
-PROJECT_NAME ansible_ssh_host=192.168.33.33 ansible_ssh_port=22
+[development]
+vagrant ansible_ssh_host=192.168.33.33 ansible_ssh_port=22
+
+[production]
+PRODUCTION_DOMAIN
+
+[servers:children]
+development
+production

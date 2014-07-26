@@ -25,4 +25,6 @@ ${find_comm} | grep -v '.git' | xargs sed -i "s/LICENSE_NAME/${license}/g"
 ${find_comm} | grep -v '.git' | xargs sed -i "s/DEVELOPMENT_PASSWORD/${db_pass}/g"
 mv PROJECT_NAME.cabal ${proj_name}.cabal
 
+rm configure.sh
+
 echo "All done!"
