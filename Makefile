@@ -2,17 +2,19 @@ PROJECT=PROJECT_NAME
 USER=REMOTE_USER
 SERVER=PRODUCTION_DOMAIN
 
-.PHONY: setup-dev build-dev
+.PHONY: customize setup build
 
 customize:
 	./customize.sh
 
-setup-dev:
+setup:
 	vagrant up
 	vagrant provision
 	vagrant ssh -c 'PATH=$$PATH:/home/vagrant/.cabal/bin:/home/vagrant/ghc/bin cabal install alex'
 	vagrant ssh -c 'PATH=$$PATH:/home/vagrant/.cabal/bin:/home/vagrant/ghc/bin ghc-pkg hide resource-pool'
-build-dev:
+	vagrant ssh -c 'export PATH=$$PATH:$$HOME/.cabal/bin:$$HOME/ghc/bin; cd /vagrant; cabal install -j -fdevelopment --allow-newer --force-reinstalls'
+
+build:
 	vagrant ssh -c 'export PATH=$$PATH:$$HOME/.cabal/bin:$$HOME/ghc/bin; cd /vagrant; cabal install -j -fdevelopment --allow-newer --force-reinstalls && ./dist/build/${PROJECT}/${PROJECT}'
 
 

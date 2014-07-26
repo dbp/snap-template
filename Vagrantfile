@@ -28,6 +28,9 @@ Vagrant.configure("2") do |config|
     ansible.sudo = true
     # ansible.raw_arguments = ['-v']
   end
+  
+  config.vm.network "forwarded_port", guest: 8000, host: 8000, auto_correct: true
+  
 
   # Set the name of the VM. See: http://stackoverflow.com/a/17864388/100134
   config.vm.define :PROJECT_NAME do |PROJECT_NAME|
