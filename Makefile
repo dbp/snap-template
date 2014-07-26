@@ -5,7 +5,7 @@ SERVER=PRODUCTION_DOMAIN
 .PHONY: setup-dev build-dev
 
 customize:
-	./configure.sh
+	./customize.sh
 
 setup-dev:
 	vagrant up
