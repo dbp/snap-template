@@ -26,6 +26,7 @@ ${find_comm} | grep -v '.git' | xargs sed -i "s/DEVELOPMENT_PASSWORD/${db_pass}/
 mv PROJECT_NAME.cabal ${proj_name}.cabal
 
 rm configure.sh
+mv prod-sample.cfg prod.cfg
 rm -r .git
 git init
 git add .
