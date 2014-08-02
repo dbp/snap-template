@@ -1,52 +1,100 @@
 PROJECT=PROJECT_NAME
-USER=REMOTE_USER
-SERVER=PRODUCTION_DOMAIN
 
-.PHONY: customize setup build
+EXECUTABLE=$(BINDIR)/$(PROJECT)
+DEPS=
+TESTMAIN=src/Test.hs
+INSTALLFLAGS=-j -fdevelopment --reorder-goals
+MOODEVEL=-c devel.cfg
+MOOTEST=-c test.cfg
+
+EXEC=cabal exec --
+RUN=$(EXEC) runghc -isrc
+BINDIR=.cabal-sandbox/bin
+BUILDDIR=dist
+SOURCES=$(shell find src -type f -iname '*.hs')
+DEPDIR=deps
+SHELL=/bin/bash
+
+.PHONY: all install clean superclean test init deps sandbox tags confirm \
+	dbup dbtest dbnew dbrevert customize setup-vm build-vm
+
+all: init install test tags
 
 customize:
 	./customize.sh
 
-setup:
+setup-vm:
 	vagrant up
 	vagrant provision
 	vagrant ssh -c 'PATH=$$PATH:/home/vagrant/.cabal/bin:/home/vagrant/ghc/bin cabal install alex'
 	vagrant ssh -c 'PATH=$$PATH:/home/vagrant/.cabal/bin:/home/vagrant/ghc/bin ghc-pkg hide resource-pool'
 	vagrant ssh -c 'export PATH=$$PATH:$$HOME/.cabal/bin:$$HOME/ghc/bin; cd /vagrant; cabal install -j -fdevelopment --allow-newer --force-reinstalls'
 
-build:
+build-vm:
 	vagrant ssh -c 'export PATH=$$PATH:$$HOME/.cabal/bin:$$HOME/ghc/bin; cd /vagrant; cabal install -j -fdevelopment --allow-newer --force-reinstalls && ./dist/build/${PROJECT}/${PROJECT}'
 
+install: $(EXECUTABLE)
 
+$(EXECUTABLE): $(SOURCES)
+	cabal install $(INSTALLFLAGS)
 
-# NOTE(dbp 2014-07-20): Need to figure out how to do desktop notifications.
-# test-runner:
-#	vagrant ssh -c 'export PATH=$$PATH:$$HOME/.cabal/bin:$$HOME/ghc/bin; cd /vagrant; cabal exec runghc -- -isrc src/TestRunner.hs'
+test:
+	$(RUN) $(TESTMAIN)
 
-#test-once:
-#	vagrant ssh -c 'export PATH=$$PATH:$$HOME/.cabal/bin:$$HOME/ghc/bin; cd /vagrant; cabal exec runghc -- -isrc src/Test.hs'
-
-
-# NOTE(dbp 2014-07-20): deployment is more complicated - need to setup production
-# machine, then to deploy, build inside vagrant box, then push out to production.
-# Migrations have a similar path - build them within vagrant, then push, then migrate.
-
-# migrate:
-# 	rsync --checksum -ave 'ssh '  migrations/* ${USER}@${SERVER}:migrations
-# 	ssh ${USER}@${SERVER} "/var/www/moo.sh upgrade"
-# 	ssh ${USER}@${SERVER} "migrate up"
-
-
-# keter-build:
-# 	cabal install -j --reorder-goals
-# 	cp .cabal-sandbox/bin/${PROJECT} ${PROJECT}
-# 	tar czfv ${PROJECT}.keter ${PROJECT} config prod.cfg static snaplets log/_blank
-
-# keter-deploy:
-# 	scp ${PROJECT}.keter ${SERVER}:/opt/keter/incoming
-
-# deploy: keter-build keter-deploy
+run: $(EXECUTABLE)
+	$(EXECUTABLE)
 
 clean:
-	find . -iname \*.hi | xargs rm
-	find . -iname \*.o | xargs rm
+	rm -rf $(BUILDDIR) $(EXECUTABLE)
+
+superclean: confirm clean
+	rm -rf $(DEPDIR) .cabal-sandbox/ cabal.sandbox.config TAGS
+
+confirm:
+	@read -r -p "Are you sure? [y/N] " CONTINUE; \
+	[[ ! $$CONTINUE =~ ^[Yy]$$ ]] && exit 1; echo "Continuing...";
+
+init: sandbox deps
+
+
+deps: $(patsubst %, $(DEPDIR)/%.d, $(DEPS)) $(DEPDIR)/digestive-functors
+
+$(DEPDIR)/digestive-functors:
+	git clone -b snap-upload-fix git@github.com:positioncoop/digestive-functors.git $@
+	cabal sandbox add-source $(DEPDIR)/digestive-functors/digestive-functors-snap
+
+
+$(DEPDIR)/%.d:
+	git clone git@github.com:$*.git $@
+	cabal sandbox add-source $@
+
+
+sandbox: cabal.sandbox.config
+
+cabal.sandbox.config:
+	cabal sandbox init
+
+
+tags: TAGS
+
+TAGS: $(SOURCES)
+	$(EXEC) haskdogs -e
+
+
+db:
+	PGPASSWORD=DEVELOPMENT_PASSWORD psql PROJECT_NAME_devel -UPROJECT_NAME_user -hlocalhost
+
+dbup:
+	moo upgrade $(MOODEVEL)
+	moo upgrade $(MOOTEST)
+
+dbtest:
+	moo test $(MOODEVEL) $(MIGRATION)
+	moo test $(MOOTEST) $(MIGRATION)
+
+dbnew:
+	moo new $(MOODEVEL) $(MIGRATION)
+
+dbrevert:
+	moo revert $(MOODEVEL) $(MIGRATION)
+	moo revert $(MOOTEST) $(MIGRATION)
