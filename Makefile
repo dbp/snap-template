@@ -80,6 +80,12 @@ tags: TAGS
 TAGS: $(SOURCES)
 	$(EXEC) haskdogs -e
 
+dbsetup:
+	sudo -u postgres psql -U postgres -d template1 -c "create user PROJECT_NAME_user with password 'DEVELOPMENT_PASSWORD';"
+        sudo -u postgres psql -U postgres -d template1 -c "create database PROJECT_NAME_devel;"
+	sudo -u postgres psql -U postgres -d template1 -c "create database PROJECT_NAME_test;"
+	sudo -u postgres psql -U postgres -d template1 -c "grant all on database PROJECT_NAME_devel to PROJECT_NAME_user;"
+	sudo -u postgres psql -U postgres -d template1 -c "grant all on database PROJECT_NAME_test to PROJECT_NAME_user;"
 
 db:
 	PGPASSWORD=DEVELOPMENT_PASSWORD psql PROJECT_NAME_devel -UPROJECT_NAME_user -hlocalhost
