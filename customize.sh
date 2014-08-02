@@ -25,9 +25,9 @@ ${find_comm} | grep -v '.git' | xargs sed -i "s/LICENSE_NAME/${license}/g"
 ${find_comm} | grep -v '.git' | xargs sed -i "s/DEVELOPMENT_PASSWORD/${db_pass}/g"
 mv PROJECT_NAME.cabal ${proj_name}.cabal
 
-rm configure.sh
+rm customize.sh
 mv prod-sample.cfg prod.cfg
-rm -r .git
+rm -rf .git
 git init
 git add .
 git commit -m "Initial commit - customized template"
